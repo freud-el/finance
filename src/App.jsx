@@ -6797,6 +6797,23 @@ export default function App() {
     }
     const mergedCoverage = range ? mergeDateRanges(account.coverage || [], [range]) : account.coverage || [];
 
+    // A schedule reflecting the CURRENT state of the loan (e.g. freshly
+    // generated after an early repayment) always starts close to today —
+    // it lists upcoming payments from generation time forward. A
+    // historical/backfilled schedule starts long before today. This is a
+    // more reliable signal than comparing end dates: an early repayment
+    // shortens the remaining term, so the new schedule can easily end
+    // EARLIER than an old one while still being the one that should win.
+    const startsRecently = !range || Math.abs(new Date(range.start) - new Date(todayISO())) <= 1000 * 60 * 60 * 24 * 90;
+
+    const updatedCredit =
+      account.type === "credit" && startsRecently && (result.rateGuess != null || result.monthlyGuess != null)
+        ? {
+            rate: result.rateGuess != null ? result.rateGuess : account.credit?.rate,
+            monthlyPayment: result.monthlyGuess != null ? result.monthlyGuess : account.credit?.monthlyPayment,
+          }
+        : account.credit;
+
     const importLog = {
       id: importId || uid(),
       timestamp: new Date().toISOString(),
@@ -6812,6 +6829,7 @@ export default function App() {
       iban: account.iban || result.ibanGuess || account.iban,
       bic: account.bic || result.bicGuess || account.bic,
       contractNumber: account.contractNumber || result.contractGuess || account.contractNumber,
+      credit: updatedCredit,
       transactions: mergedTransactions,
       entries: mergedEntries,
       coverage: mergedCoverage,
