@@ -1,0 +1,13 @@
+{
+  "name": "Suivi Comptes",
+  "short_name": "Comptes",
+  "start_url": "/finance/",
+  "scope": "/finance/",
+  "display": "standalone",
+  "background_color": "#0F2A1C",
+  "theme_color": "#0F2A1C",
+  "icons": [
+    { "src": "/finance/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/finance/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
