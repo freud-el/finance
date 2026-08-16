@@ -14,7 +14,8 @@
     "lucide-react": "^0.383.0",
     "recharts": "^2.12.7",
     "papaparse": "^5.4.1",
-    "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-latest/xlsx-latest.tgz",
+    "firebase": "^10.13.0"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.1",
