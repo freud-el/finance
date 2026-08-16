@@ -3463,7 +3463,7 @@ function Overview({ accounts, onOpenAccount, onAddAccount, onOpenUncategorized, 
   // not in this set, so a Salaire-tagged transaction must still count.
   const NON_EXPENSE_CATEGORIES = new Set(["Virement interne", "Épargne", "Intérêts"]);
 
-  const [comparisonRange, setComparisonRange] = useState("6M");
+  const [comparisonRange, setComparisonRange] = useState("Max");
   const [trendMode, setTrendMode] = useState("taux"); // "taux" | "montants"
   const [trendMonths, setTrendMonths] = useState(12); // 3 | 6 | 9 | 12
   const [selectedTrendMonthIdx, setSelectedTrendMonthIdx] = useState(null);
@@ -5278,8 +5278,13 @@ function AccountDetail({ account, onBack, onEdit, onAddEntry, onLogBalance, onCa
   // account history is unreadable as one giant chart. "Couverture des
   // relevés" (below) drives this same filter: pick a year, or a specific
   // month for an even tighter view, or switch to "Toutes les années".
+  // Credit accounts are the exception: the whole point of their chart is
+  // the declining balance over the full loan term, so they default to
+  // "all" rather than a single zoomed-in year.
   const latestYear = entries.length ? Number(entries[entries.length - 1].date.slice(0, 4)) : new Date().getFullYear();
-  const [chartFilter, setChartFilter] = useState({ mode: "year", year: latestYear, month: null });
+  const [chartFilter, setChartFilter] = useState(
+    account.type === "credit" ? { mode: "all", year: null, month: null } : { mode: "year", year: latestYear, month: null }
+  );
   const chartEntries = entries.filter((e) => {
     if (chartFilter.mode === "all") return true;
     if (chartFilter.mode === "year") return e.date.slice(0, 4) === String(chartFilter.year);
